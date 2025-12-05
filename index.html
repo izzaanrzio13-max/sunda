@@ -1,0 +1,558 @@
+  <!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>PANCYOFFC — Final Full Version</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#0b0c10;
+  color:#eafcff;
+  font-family:Inter,system-ui,-apple-system;
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px;
+  min-height:100vh;
+}
+header{text-align:center;margin-top:20px}
+.logo{width:100px;height:100px;border-radius:50%;border:2px solid #7ee2ff;object-fit:cover}
+h1{margin-top:10px;color:#fff;font-size:18px;text-align:center;line-height:1.4}
+
+/* menu */
+.menu-area{position:fixed;left:12px;top:12px;z-index:60}
+.menu-btn{font-size:28px;cursor:pointer;color:#7ee2ff;font-weight:900}
+.sideMenu{
+  position:fixed;left:0;top:0;height:100vh;width:220px;background:rgba(8,8,8,0.98);
+  padding:18px;transform:translateX(-240px);
+  transition:transform .26s cubic-bezier(.2,.9,.28,1);
+  z-index:70;border-right:1px solid rgba(126,226,255,0.25);
+  display:flex;flex-direction:column;gap:10px;
+}
+.sideMenu.open{transform:translateX(0)}
+.sideMenu h2{color:#7ee2ff;text-align:center;margin-bottom:6px}
+.sideMenu a{display:flex;gap:8px;align-items:center;color:#cfeff0;text-decoration:none;font-weight:700;padding:6px 4px;border-radius:8px}
+.sideMenu a:hover{background:rgba(126,226,255,0.12)}
+
+/* tombol utama */
+.card-box{
+  margin-top:20px;
+  width:100%;
+  max-width:420px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  border:1px solid rgba(126,226,255,0.3);
+  border-radius:16px;
+  padding:16px;
+  background:rgba(255,255,255,0.02);
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);
+}
+.btn{
+  background:linear-gradient(180deg,rgba(126,226,255,0.1),rgba(126,226,255,0.03));
+  border:1px solid rgba(126,226,255,0.4);
+  color:#7ee2ff;
+  border-radius:10px;
+  padding:12px;
+  font-weight:800;
+  cursor:pointer;
+  text-align:center;
+  font-size:15px;
+  letter-spacing:0.3px;
+}
+.btn:hover{background:rgba(126,226,255,0.1)}
+
+/* galeri */
+.gallery{
+  position:relative;
+  width:100%;
+  max-width:300px;
+  height:520px;
+  margin-top:28px;
+  overflow:hidden;
+  border-radius:22px;
+  border:1px solid rgba(126,226,255,0.3);
+  box-shadow:0 6px 16px rgba(0,0,0,0.7);
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.slider{
+  display:flex;
+  height:100%;
+  transition:transform 0.5s ease-in-out;
+}
+.slider img{
+  flex:0 0 100%;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  background:#000;
+}
+.gallery .nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(0,0,0,0.4);
+  border:none;color:#7ee2ff;
+  font-size:22px;padding:6px 10px;
+  border-radius:50%;cursor:pointer;
+  z-index:80;
+}
+.gallery .prev{left:10px}
+.gallery .next{right:10px}
+.gallery .nav:hover{background:rgba(0,0,0,0.6)}
+
+footer{margin-top:40px;color:rgba(126,226,255,0.7);font-size:12px}
+
+/* popup umum */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.72);
+  display:none;align-items:center;justify-content:center;
+  z-index:96;padding:12px;
+  backdrop-filter:blur(5px);
+}
+.overlay.show{display:flex;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
+.modal{
+  width:100%;max-width:520px;border-radius:12px;
+  padding:16px;background:#0f1113;
+  border:1px solid rgba(126,226,255,0.3);
+  box-shadow:0 20px 60px rgba(0,0,0,0.7)
+}
+.modal h2{color:#7ee2ff;text-align:center;margin-bottom:8px;font-size:18px}
+.modal p{color:#cfeff0;font-size:14px;line-height:1.5;margin-bottom:12px}
+.copy-row{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0b0b0b;border-radius:10px;border:1px solid rgba(126,226,255,0.25);margin-bottom:8px}
+.small-btn{background:transparent;border:0;color:#7ee2ff;font-weight:800;cursor:pointer;padding:6px}
+.actions{display:flex;gap:10px;margin-top:8px}
+.actions .primary{flex:1;padding:12px;border-radius:12px;background:#7ee2ff;color:#001;font-weight:900;border:none;cursor:pointer}
+.actions .ghost{flex:1;padding:12px;border-radius:12px;background:#121212;border:1px solid rgba(255,255,255,0.05);color:#fff;cursor:pointer}
+
+/* popup awal */
+#popupJoin h2{color:#7ee2ff}
+</style>
+</head>
+<body>
+
+<!-- popup awal -->
+<div id="popupJoin" class="overlay show">
+  <div class="modal" style="max-width:420px;text-align:center;">
+    <h2>SELAMAT DATANG DI PANCYOFFC</h2>
+    <p style="color:#cfeff0;margin-bottom:14px;">
+      Sebelum menggunakan web ini, silakan dukung kami dengan mengikuti saluran resmi PANCYOFFC. 🙏
+    </p>
+    <div class="actions" style="flex-direction:column;gap:8px;">
+      <button id="btnFollow" class="primary" style="width:100%;">Ikuti Saluran WhatsApp</button>
+      <button id="btnEnterSite" class="ghost" style="width:100%;">Lanjutkan ke Situs</button>
+    </div>
+  </div>
+</div>
+
+<!-- menu -->
+<div class="menu-area"><div id="menuBtn" class="menu-btn">☰</div></div>
+<nav id="sideMenu" class="sideMenu">
+  <h2>CONTACT ADMIN</h2>
+  <a href="https://whatsapp.com/channel/0029VbBpJOPBA1exaMkKrn3G" target="_blank">WhatsApp</a>
+  <a href="https://t.me/marketpahri" target="_blank">Telegram</a>
+   <a href="https://youtube.com/@Pancyofficial" target="_blank">YouTube</a>
+  <a href="https://tiktok.com/@pancy4you.official" target="_blank">TikTok</a>
+</nav>
+
+<header>
+  <img src="https://files.catbox.moe/jsj0d4.jpg" class="logo" alt="Logo">
+  <h1>BAHAN<br>UNBAND WHATSAPP</h1>
+</header>
+
+<!-- tombol utama -->
+<section class="card-box">
+  <button id="btnVideo" class="btn">Video Tutorial</button>
+  <button id="btnTujuan" class="btn">Gmail WhatsApp</button>
+  <button id="btnSubjek" class="btn">Subjek Tinjauan</button>
+  <button id="btnText" class="btn">Text Unband</button>
+  <button id="btnTextv2" class="btn">Text Unband V2</button>
+</section>
+
+<!-- galeri -->
+<div class="gallery">
+  <button class="nav prev">❮</button>
+  <div class="slider" id="slider">
+    <img src="https://i.imgur.com/fLQxRhC.jpeg">
+    <img src="https://i.imgur.com/EV5UgQf.jpeg">
+    <img src="https://i.imgur.com/tFTM4rc.jpeg">
+    <img src="https://i.imgur.com/JrAdT94.jpeg">
+    <img src="https://i.imgur.com/bWf8fe2.jpeg">
+    <img src="https://i.imgur.com/qDeX1KY.jpeg">
+  </div>
+  <button class="nav next">❯</button>
+</div>
+
+<div id="toast" class="toast"></div>
+<footer>© PANCYOFFC — 2025</footer>
+
+<!-- popup video -->
+<div id="popupVideo" class="overlay">
+  <div class="modal">
+    <h2>VIDEO TUTORIAL</h2>
+    <p>Tonton panduan cara banding WhatsApp</p>
+    <div class="actions">
+      <button class="primary" id="openTiktok">Buka</button>
+      <button class="ghost" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- popup gmail -->
+<div id="popupTujuan" class="overlay">
+  <div class="modal">
+    <h2>GMAIL TUJUAN</h2>
+    <div class="copy-row"><span id="email1"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="20535550504f52546057484154534150500e434f4d">[email&#160;protected]</a></span><button class="small-btn" data-copy="email1">Salin</button></div>
+    <div class="copy-row"><span id="email2"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f3808683839c8187b3808683839c8187dd849b928780928383dd909c9e">[email&#160;protected]</a></span><button class="small-btn" data-copy="email2">Salin</button></div>
+    <div class="copy-row"><span id="email3"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cbb8a6a98bb8bebbbba4b9bfe5bca3aabfb8aabbbbe5a8a4a6">[email&#160;protected]</a></span><button class="small-btn" data-copy="email3">Salin</button></div>
+    <div class="actions"><button class="primary" data-close>Tutup</button></div>
+  </div>
+</div>
+
+<!-- popup subjek -->
+<div id="popupSubjek" class="overlay">
+  <div class="modal">
+    <h2>SUBJEK TINJAUAN</h2>
+    <p id="subjekText" class="deep-text">Request for Detailed Review & Restoration of Permanently Banned WhatsApp Account
+(+62xxxxxxxxxxx)</p>
+    <div class="actions">
+      <button class="primary" data-copy="subjekText">Salin Subjek</button>
+      <button class="ghost" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- popup text unband -->
+<div id="popupText" class="overlay">
+  <div class="modal">
+    <h2>TEXT UNBAND</h2>
+    <p>Pilih jenis Opsi Akun anda:</p>
+    <select id="textOption" style="width:100%;padding:10px;border-radius:10px;background:#0b0b0b;color:#cfeff0">
+      <option value="">-- Pilih Opsi Unband --</option>
+      <option value="spam">Opsi Spam</option>
+      <option value="baru">Opsi Permanen Fresh</option>
+      <option value="hard">Opsi Permanen Hard</option>
+      <option value="sebulan">Opsi Permanen belum 1 bulan</option>
+      <option value="spamkedip">Opsi Spam Kedip</option>
+      <option value="fresh">Opsi Permanen Fresh/Batu/Lumut</option>
+      <option value="batu">Opsi permanen Batu</option>
+      <option value="resetotp">Opsi Reset Otp</option>
+      <option value="beberapa">Opsi Permanen Lumut</option>
+    </select>
+    <div class="actions">
+      <button class="primary" id="copyUnbandBtn">Salin Text</button>
+      <button class="ghost" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- popup sukses -->
+<div id="popupSuccess" class="overlay">
+  <div class="modal">
+    <h2>Copied successfully✅</h2>
+    <p class="success-inset">
+ <strong>Sukses disalin!</strong><br><br>
+
+Silakan tempel teks ke <strong>Gmail</strong> .<br><br>
+
+Setelah pengajuan banding dikirim, pihak WhatsApp biasanya membutuhkan waktu <strong>1–7 hari kerja</strong> untuk meninjau dan memproses permintaan Anda.<br><br>
+
+Mohon bersabar menunggu hasilnya.<br>
+Jika setelah <strong>7 hari</strong> akun belum juga dipulihkan, silakan <strong>banding ulang dengan opsi teks yang berbeda.</strong><br><br>
+
+Apabila setelah beberapa kali pengajuan akun tetap tidak terbuka, berarti <strong>permohonan banding Anda ditolak</strong> oleh sistem WhatsApp — kemungkinan karena nomor Anda terdeteksi melakukan <strong>pelanggaran verifikasi</strong>, seperti aktivitas <strong>spam, promosi massal,</strong> atau <strong>penggunaan yang tidak sesuai kebijakan.</strong>
+</p>
+    <div class="actions"><button class="primary" data-close>Tutup</button></div>
+  </div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+document.addEventListener('DOMContentLoaded',()=>{
+
+<!-- popup text unband V2 -->
+<div id="popupText" class="overlay">
+  <div class="modal">
+    <h2>TEXT UNBAND V2</h2>
+    <p>Pilih jenis Opsi Akun anda:</p>
+    <select id="textOption" style="width:100%;padding:10px;border-radius:10px;background:#0b0b0b;color:#cfeff0">
+      <option value="">-- Pilih Opsi Unband --</option>
+      <option value="spam">Opsi Spam</option>
+      <option value="baru">Opsi Permanen Fresh</option>
+      <option value="hard">Opsi Permanen Hard</option>
+      <option value="sebulan">Opsi Permanen belum 1 bulan</option>
+      <option value="spamkedip">Opsi Spam Kedip</option>
+      <option value="fresh">Opsi Permanen Fresh/Batu/Lumut</option>
+    </select>
+    <div class="actions">
+      <button class="primary" id="copyUnbandBtn">Salin Text</button>
+      <button class="ghost" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- popup sukses -->
+<div id="popupSuccess" class="overlay">
+  <div class="modal">
+    <h2>Copied successfully✅</h2>
+    <p class="success-inset">
+ <strong>Sukses disalin!</strong><br><br>
+
+Silakan tempel teks ke <strong>Gmail</strong> .<br><br>
+
+Setelah pengajuan banding dikirim, pihak WhatsApp biasanya membutuhkan waktu <strong>1–7 hari kerja</strong> untuk meninjau dan memproses permintaan Anda.<br><br>
+
+Mohon bersabar menunggu hasilnya.<br>
+Jika setelah <strong>7 hari</strong> akun belum juga dipulihkan, silakan <strong>banding ulang dengan opsi teks yang berbeda.</strong><br><br>
+
+Apabila setelah beberapa kali pengajuan akun tetap tidak terbuka, berarti <strong>permohonan banding Anda ditolak</strong> oleh sistem WhatsApp — kemungkinan karena nomor Anda terdeteksi melakukan <strong>pelanggaran verifikasi</strong>, seperti aktivitas <strong>spam, promosi massal,</strong> atau <strong>penggunaan yang tidak sesuai kebijakan.</strong>
+</p>
+    <div class="actions"><button class="primary" data-close>Tutup</button></div>
+  </div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+document.addEventListener('DOMContentLoaded',()=>{
+
+// === POPUP AWAL ===
+const popupJoin=document.getElementById('popupJoin');
+document.getElementById('btnFollow').onclick=()=>window.open("https://whatsapp.com/channel/0029VbBpJOPBA1exaMkKrn3G","_blank");
+document.getElementById('btnEnterSite').onclick=()=>popupJoin.classList.remove('show');
+
+// === MENU SAMPING ===
+const menuBtn=document.getElementById('menuBtn');
+const sideMenu=document.getElementById('sideMenu');
+menuBtn.onclick=e=>{e.stopPropagation();sideMenu.classList.toggle('open');};
+document.addEventListener('click',e=>{
+  if(!sideMenu.contains(e.target)&&!menuBtn.contains(e.target))
+    sideMenu.classList.remove('open');
+});
+
+// === TOAST NOTIFIKASI ===
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1500);
+}
+
+// === SALIN TEKS (offline & online support) ===
+function safeCopy(text){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text;
+    ta.style.position='fixed';
+    ta.style.left='-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    return true;
+  }catch(e){return false;}
+}
+
+// === FUNGSI POPUP UMUM ===
+function openPopup(id){document.getElementById(id).classList.add('show');}
+function closePopup(el){el.closest('.overlay').classList.remove('show');}
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closePopup(b));
+
+// === BUTTON TOMBOL UTAMA ===
+document.getElementById('btnVideo').onclick=()=>openPopup('popupVideo');
+document.getElementById('btnTujuan').onclick=()=>openPopup('popupTujuan');
+document.getElementById('btnSubjek').onclick=()=>openPopup('popupSubjek');
+document.getElementById('btnText').onclick=()=>openPopup('popupText');
+document.getElementById('openTiktok').onclick=()=>window.open('https://whatsapp.com/channel/0029VbBpJOPBA1exaMkKrn3G');
+
+// === COPY TEKS UMUM (email, subjek) ===
+document.querySelectorAll('[data-copy]').forEach(btn=>{
+  btn.onclick=()=>{
+    const id=btn.dataset.copy;
+    const el=document.getElementById(id);
+    if(!el)return;
+    const ok=safeCopy(el.innerText.trim());
+    if(ok){showToast('✅ Disalin');}
+    else if(navigator.clipboard)
+      navigator.clipboard.writeText(el.innerText.trim()).then(()=>showToast('✅ Disalin')).catch(()=>alert('Gagal menyalin.'));
+  };
+});
+
+// === TEXT UNBAND ===
+document.getElementById('copyUnbandBtn').onclick=()=>{
+  const opt=document.getElementById('textOption').value;
+  if(!opt){alert('Pilih jenis banned dulu!');return;}
+  const teks={
+    spam:`SUBJEK: Permintaan Peninjauan Manual dan Pemulihan Akun WhatsApp – Pancyofficial (+62xxxxxxxxxx)
+
+Kepada Tim Dukungan WhatsApp,
+
+Nama saya Pancyofficial, pemilik terdaftar nomor telepon +62xxxxxxxxxx. Saya menulis surat ini untuk mengajukan banding atas penangguhan terbaru yang diterapkan pada akun WhatsApp saya dan meminta peninjauan manual secara mendetail. Saya percaya sistem otomatis mungkin telah menandai akun saya berdasarkan interpretasi yang keliru terhadap aktivitas saya baru-baru ini.
+
+Dalam minggu terakhir, saya sering membagikan berbagai file media — seperti video, dokumen, dan gambar resolusi tinggi — untuk sebuah proyek yang melibatkan analisis kolaboratif konten. Volume besar file yang dikirim dalam periode tersebut mungkin keliru diidentifikasi sebagai perilaku mencurigakan atau berpotensi merugikan. Saya ingin menjelaskan bahwa semua materi tersebut sah dan dibagikan secara eksklusif dalam jaringan profesional saya.
+
+Saya tidak pernah mengirim pesan yang tidak diminta, maupun melakukan distribusi massal media atau tindakan yang melanggar kebijakan WhatsApp. Pembatasan ini telah menyebabkan kerugian signifikan pada pekerjaan saya dan komunikasi dengan rekan serta mitra proyek.
+
+Oleh karena itu, saya dengan hormat meminta tim WhatsApp untuk melakukan analisis manual ulang pada akun saya dan memulihkan akses saya jika tidak ditemukan pelanggaran yang disengaja. Saya sangat berterima kasih atas perhatian, bantuan, dan kerja sama dalam menyelesaikan masalah ini.
+
+Terima kasih atas pengertian dan pertimbangannya.
+
+Hormat saya,
+Pancy4you.`,
+    baru:`Subjek: Permohonan Peninjauan dan Pemulihan Akun WhatsApp yang Diblokir
+
+Kepada Yth.
+Tim WhatsApp Support
+di Tempat
+
+Dengan hormat,
+
+Perkenalkan, saya Pancyofficial, pengguna WhatsApp dengan nomor +62XXXXXXXXXX. Melalui surat permohonan ini, saya ingin menyampaikan bahwa akun WhatsApp saya saat ini berada dalam status diblokir sehingga saya tidak dapat mengakses layanan sebagaimana mestinya.
+
+Saya menyadari bahwa pemblokiran akun biasanya dilakukan karena terdeteksinya aktivitas yang dianggap melanggar ketentuan layanan. Namun demikian, dengan penuh rasa hormat, saya ingin menjelaskan bahwa sepanjang pengetahuan dan kesadaran saya, saya tidak pernah melakukan tindakan yang bertentangan dengan Kebijakan Penggunaan, Ketentuan Layanan, ataupun Standar Keamanan WhatsApp.
+
+Kemungkinan besar sistem mendeteksi aktivitas yang tidak biasa, atau terdapat kekeliruan teknis yang menyebabkan akun saya diblokir. Untuk itu, saya mengajukan permohonan agar akun saya dapat ditinjau ulang secara menyeluruh oleh tim WhatsApp Support.
+
+Akun WhatsApp ini sangat penting bagi saya untuk menunjang berbagai keperluan, baik dalam berkomunikasi dengan keluarga, teman, kolega, maupun dalam mengatur berbagai kebutuhan sehari-hari. Tidak aktifnya akun ini memberikan dampak yang cukup signifikan terhadap kelancaran aktivitas saya.
+
+Saya berkomitmen untuk selalu menggunakan WhatsApp secara bertanggung jawab dan mematuhi seluruh kebijakan yang berlaku. Jika terdapat hal-hal yang perlu diperbaiki atau diperhatikan, saya siap untuk menindaklanjuti seluruh arahan dari pihak WhatsApp agar tidak terjadi kendala yang sama di kemudian hari.
+
+Oleh karena itu, dengan segala kerendahan hati saya memohon agar tim WhatsApp dapat melakukan verifikasi ulang dan mengaktifkan kembali akun saya. Saya percaya bahwa tim WhatsApp memiliki prosedur serta standar evaluasi yang ketat dan objektif dalam menangani setiap laporan, dan saya sangat berharap permohonan ini dapat dipertimbangkan.
+
+Demikian surat permohonan ini saya sampaikan. Atas perhatian, waktu, dan kerja sama dari tim WhatsApp Support, saya mengucapkan terima kasih.
+
+Hormat saya,
+Pancyofficial 
+Nomor WhatsApp: +62XXXXXXXXXX`,
+    hard:`SUBJEK: Solicitud de Reapertura de Cuenta por Motivos de Emergencia
+
+Halo Tim Pemantauan WhatsApp dan Sistem Meta.
+Nama saya Pancyofficial dan saya memohon dengan hormat untuk meninjau kembali akun WhatsApp saya yang terkait dengan nomor +62xxxxxxxx, yang saat ini terblokir oleh sistem. Blokir ini terjadi di tengah situasi darurat di area saya karena bencana alam, sehingga saya membutuhkan komunikasi darurat dengan keluarga dan komunitas saya. Saya tidak mengetahui penyebab pasti dari pemblokiran ini, karena saya hanya menggunakan WhatsApp untuk mengkoordinasikan urusan terkait darurat. Oleh karena itu, saya memohon dengan tulus agar tim Anda dapat meninjau kembali kasus saya dan memulihkan akses ke akun saya. Saya mengucapkan terima kasih atas dukungan dan pengertian Anda sebelumnya.
+
+Secara khusus dalam situasi kritis ini, komunikasi darurat melalui WhatsApp sangat penting untuk memastikan keamanan keluarga saya dan menerima informasi resmi dari pihak berwenang. Kebutuhan akses yang terbatas karena pemblokiran ini menyulitkan baik pengiriman pembaruan maupun penerimaan laporan mengenai situasi. Saya berharap tim WhatsApp dapat mempertimbangkan konteks luar biasa ini dan menawarkan solusi yang tepat agar akun saya dapat diaktifkan secepat mungkin untuk memenuhi kebutuhan darurat.`,
+    sebulan:`Hello WhatsApp Support Team,
+
+I am writing this message as a follow-up to my previous appeal regarding my WhatsApp account, which has been permanently banned for about one month now. I have already submitted an appeal before, but unfortunately, I haven’t received any solution or clear explanation regarding my account status.
+
+I truly don’t understand why my account was banned, because I have never violated any of WhatsApp’s Terms of Service or policies. I always use WhatsApp responsibly and mainly for personal and professional communication.
+
+This number is very important to me because it contains valuable data, including important business and company-related information. I kindly ask your team to review my case once again and help me restore access to my account.
+
+I sincerely hope for your understanding and assistance in resolving this matter. Thank you very much for your time and attention.
+
+Best regards,
+[Your Name]
+Phone Number: +62xxxxxxxxxxx.`,
+    spamkedip:`CATATAN: TINJAU DI AKUN KEBAN SPAM
+
+Halo admin WhatsApp, Nomor WhatsApp saya terkena blokir permanen, saya yakin ini hanya kesalahan sistem, saya mohon untuk cek kembali, terima kasih
+
+Hai Dukungan WhatsApp, nomor saya telah diblokir permanen. Saya yakin ini hanya kesalahan sistem. Mohon untuk diperiksa kembali jika memungkinkan. Terima kasih atas bantuannya.
+
+Olá equipe do WhatsApp, perdi o acesso do meu número, agora banido de forma definitiva. Sigo acreditando que seja um engano de detecção. Se puderem confirmar novamente, eu agradeço. Desde já, obrigado.
+
+Oi suporte do WhatsApp, minha conta foi interrompida permanentemente e acredito em falha na análise automática. Meu uso sempre foi legítimo. Seria possível revisar novamente? Muito grato.
+
+Alô time do WhatsApp, fui surpreendido com bloqueio permanente do meu número cadastrado. Acredito firmemente em marcação equivocada do sistema. Se puderem revisitar o caso, ficarei imensamente agradecido. Valeu pela compreensão.`,
+    fresh:`Subjek: Banding Formal untuk Peninjauan Blokir Permanen Akun WhatsApp – pancy (+62xxxxxxxxxx)
+
+Tim Dukungan WhatsApp Inc. yang Terhormat,
+Semoga pesan ini menemukan Anda dalam keadaan baik. Nama saya edSKUY, dan saya menghubungi Anda sebagai pemilik terdaftar nomor telepon +62xxxxxxxxxx. Saya menulis untuk dengan hormat meminta penilaian ulang menyeluruh atas blokir permanen yang diterapkan pada akun WhatsApp saya. Setelah refleksi mendalam atas penggunaan saya, saya sangat yakin bahwa pembatasan ini mungkin disebabkan oleh evaluasi sistem otomatis yang tidak akurat dan bukan karena pelanggaran kebijakan yang disengaja dari pihak saya.
+
+Dalam beberapa hari terakhir, aktivitas akun saya melibatkan pertukaran media yang sering—termasuk dokumen, gambar, dan file video—yang dibagikan secara eksklusif dengan kontak profesional terpercaya untuk tujuan komunikasi yang sah. Tidak ada pengiriman massal, perilaku spam, penyalahgunaan otomatisasi, atau distribusi konten yang tidak diminta yang dapat melanggar pedoman komunitas atau platform. Saya sepenuhnya memahami pentingnya menjaga lingkungan digital yang aman, dan saya sangat menghargai komitmen WhatsApp dalam melindungi pengguna melalui sistem moderasi yang bertanggung jawab.
+
+Oleh karena itu, saya ingin menyampaikan penyesalan saya yang tulus jika ada kesalahpahaman atau tindakan yang tidak disengaja dari akun saya yang berkontribusi pada hasil ini. Saya menjamin dengan penuh tanggung jawab bahwa saya selalu berusaha mematuhi harapan platform, dan saya berkomitmen sepenuhnya untuk mematuhi semua kebijakan yang ditetapkan oleh WhatsApp dan organisasi induknya, Meta Platforms. Status saat ini telah mengganggu komunikasi harian saya dan mempengaruhi akses ke percakapan penting serta data pribadi yang terkait dengan nomor saya.
+
+Dengan integritas dan rasa hormat, saya dengan hormat meminta tim Anda untuk memberikan peninjauan manual akhir atas kasus akun saya. Jika tidak ditemukan pelanggaran yang disengaja, saya dengan rendah hati memohon agar akses dipulihkan, sehingga saya dapat terus menggunakan platform ini secara bertanggung jawab. Terima kasih banyak atas waktu, pengertian, dan dukungan Anda dalam menanggapi permintaan saya.
+
+Hormat saya,
+PANCY
+Telepon: +62xxxxxxxxxx`,
+    batu:`SUBJECT: Permintaan Evaluasi Kesalahan Sistem
+
+Halo Tim Dukungan WhatsApp Meta,
+Nama saya Pancyofficial, dan saya ingin dengan hormat meminta re-evaluasi akun WhatsApp saya yang terkait dengan nomor +62xxxxxxxx, yang telah diblokir karena aktivitas yang diduga mencurigakan. Sebenarnya, saya hanya berkomunikasi secara normal dengan keluarga dan rekan kerja saya. Saya percaya sistem mungkin salah memahami aktivitas saya sebagai pelanggaran, yang menyebabkan pemblokiran ini secara tidak sengaja. Akun ini sangat penting bagi saya, dan saya memohon tim Anda untuk meninjau data aktivitas akun dan mempertimbangkan untuk mengembalikan akses saya. Terima kasih atas perhatian dan bantuan Anda.
+
+Selain itu, saya berharap proses evaluasi akan mempertimbangkan riwayat penggunaan saya yang telah lama, yang selalu stabil dan sesuai dengan kebijakan platform. Pemblokiran mendadak ini telah menyebabkan kesulitan signifikan dalam interaksi saya, terutama dengan rekan kerja yang membutuhkan komunikasi cepat dan andal. Saya percaya bahwa tinjauan manual oleh tim WhatsApp dapat mengklarifikasi situasi dan memastikan bahwa aktivitas saya tidak melanggar pedoman apa pun, sehingga akun saya dapat dikembalikan secepat mungkin.`,
+    resetotp:`こんにちは、WhatsApp サポートチームです。 
+
+WhatsApp アカウントを確認する過程で問題が発生したことを報告したいと思います。私が使用している電話番号は +62xxxx です。 WhatsApp アカウントにログインまたは登録しようとしましたが、SMS または音声通話経由で OTP コードまたは 6 桁の確認コードを受け取りませんでした。かなり長い間待っており、コードを再度リクエストしようと何度か試みましたが、今のところOTPコードはまだ携帯電話に到着していません。
+
+私の電話番号は有効であり、SMS や通常の通話を問題なく受信できることを確認しました。私の場所のネットワークと信号も安定しています。携帯電話の設定を確認し、SMS ブロック機能や受信メッセージをブロックしている可能性のあるセキュリティ アプリがないことを確認しました。おやすみモードを無効にしました。時刻と日付の設定はタイムゾーンに従って自動的に設定されます。また、携帯電話を再起動し、SIM カードを取り外して再取り付けし、最新バージョンの WhatsApp アプリケーションを介して検証プロセスを再試行しました。
+
+ただし、これらの手順をすべて実行したにもかかわらず、OTP コードを受信できません。 WhatsApp のコード送信システムに技術的な問題があるか、オペレーターのメッセージ配信ルートに干渉があるのではないかと考えられます。したがって、WhatsApp サポート チームに、私の番号のステータスを確認し、確認コードの送信を妨げる制限や技術的な問題がないことを確認するよう依頼します。
+
+可能であれば、WhatsApp アカウントにすぐに再度ログインできるように、OTP コードを再送信するか、代替の検証方法を提供するようリクエストします。このアカウントは毎日重要なコミュニケーション目的で使用されるため、どうしてもアクセスする必要があります。
+
+追加情報として、私は Android デバイスを使用しており、iPhone などの他のデバイスも持っています。検証プロセスに両方を使用してみましたが、結果は同じであり、コードは入力されません。私の電話番号は +62xxxxx で、安定したネットワークを備えたインドネシアにいます。
+
+WhatsApp サポート チームがこの問題をすぐに解決し、アカウント確認プロセスを続行するための OTP コードを確実に受け取れるようにしてくれることを心から願っています。
+
+WhatsApp チームのご配慮とご支援に感謝いたします。
+
+敬具
+マルズ博士.`,
+    beberapa:`SUBJEK: Solicitud de Revisión de Cuenta de WhatsApp
+
+Halo Tim Dukungan WhatsApp.
+Nama saya Pancyofficial dan saya ingin meminta tinjauan ulang akun WhatsApp saya yang terkait dengan nomor +62xxxxxxxx, yang tiba-tiba diblokir tanpa pemberitahuan jelas tentang alasan pemblokiran tersebut. Saya tidak tahu apa yang mungkin menyebabkan pemblokiran ini, karena selalu menggunakan layanan ini sesuai dengan aturan dan kebijakan yang berlaku. Akun ini sangat penting bagi komunikasi harian saya, sehingga saya memohon tim Anda dapat memeriksa kembali kasus ini dan memberikan penjelasan resmi mengenai apa yang terjadi. Saya menghargai waktu dan perhatian Anda.
+
+Selain itu, saya berharap proses tinjauan dapat dilakukan dengan segera, karena saya menggunakan WhatsApp sebagai media utama untuk berkoordinasi dengan keluarga dan melakukan aktivitas sehari-hari. Tidak bisa mengakses akun saya telah menimbulkan berbagai kesulitan dalam urusan pribadi dan komunikasi penting. Saya percaya bahwa tim WhatsApp memiliki prosedur evaluasi yang adil dan transparan, sehingga saya menunggu hasil yang jelas dan solusi yang memungkinkan pemulihan akses ke akun saya.`
+  };
+  const teksCopy=teks[opt];
+  const ok=safeCopy(teksCopy);
+  if(ok){showToast('✅ Pesan disalin');}
+  else if(navigator.clipboard)
+    navigator.clipboard.writeText(teksCopy).then(()=>showToast('✅ Pesan disalin'));
+  document.getElementById('popupText').classList.remove('show');
+  setTimeout(()=>openPopup('popupSuccess'),200);
+};
+
+// === TEXT UNBAND ===
+document.getElementById('copyUnbandBtn').onclick=()=>{
+  const opt=document.getElementById('textOption').value;
+  if(!opt){alert('Pilih jenis banned dulu!');return;}
+  const teks={
+    spam:`SUBJEK: Permintaan Peninjauan Manual dan Pemulihan Akun WhatsApp – Pancyofficial (+62xxxxxxxxxx)
+
+Kepada Tim Dukungan WhatsApp,
+
+Nama saya Pancyofficial, pemilik terdaftar nomor telepon +62xxxxxxxxxx. Saya menulis surat ini untuk mengajukan banding atas penangguhan terbaru yang diterapkan pada akun WhatsApp saya dan meminta peninjauan manual secara mendetail. Saya percaya sistem otomatis mungkin telah menandai akun saya berdasarkan interpretasi yang keliru terhadap aktivitas saya baru-baru ini.
+
+Dalam minggu terakhir, saya sering membagikan berbagai file media — seperti video, dokumen, dan gambar resolusi tinggi — untuk sebuah proyek yang melibatkan analisis kolaboratif konten. Volume besar file yang dikirim dalam periode tersebut mungkin keliru diidentifikasi sebagai perilaku mencurigakan atau berpotensi merugikan. Saya ingin menjelaskan bahwa semua materi tersebut sah dan dibagikan secara eksklusif dalam jaringan profesional saya.
+
+Saya tidak pernah mengirim pesan yang tidak diminta, maupun melakukan distribusi massal media atau tindakan yang melanggar kebijakan WhatsApp. Pembatasan ini telah menyebabkan kerugian signifikan pada pekerjaan saya dan komunikasi dengan rekan serta mitra proyek.
+
+Oleh karena itu, saya dengan hormat meminta tim WhatsApp untuk melakukan analisis manual ulang pada akun saya dan memulihkan akses saya jika tidak ditemukan pelanggaran yang disengaja. Saya sangat berterima kasih atas perhatian, bantuan, dan kerja sama dalam menyelesaikan masalah ini.
+
+Terima kasih atas pengertian dan pertimbangannya.
+
+Hormat saya,
+Pancy4you.`,
+  };
+  const teksCopy=teks[opt];
+  const ok=safeCopy(teksCopy);
+  if(ok){showToast('✅ Pesan disalin');}
+  else if(navigator.clipboard)
+    navigator.clipboard.writeText(teksCopy).then(()=>showToast('✅ Pesan disalin'));
+  document.getElementById('popupText').classList.remove('show');
+  setTimeout(()=>openPopup('popupSuccess'),200);
+};
+
+// === GALERI ===
+const slider=document.getElementById('slider');
+const slides=slider.querySelectorAll('img');
+let current=0,startX=null;
+function updateSlide(){slider.style.transform=`translateX(-${current*100}%)`;}
+document.querySelector('.next').onclick=()=>{current=(current+1)%slides.length;updateSlide();};
+document.querySelector('.prev').onclick=()=>{current=(current-1+slides.length)%slides.length;updateSlide();};
+slider.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;},{passive:true});
+slider.addEventListener('touchend',e=>{
+  if(startX===null)return;
+  const diff=startX-e.changedTouches[0].clientX;
+  if(Math.abs(diff)>40){if(diff>0)current=(current+1)%slides.length;else current=(current-1+slides.length)%slides.length;updateSlide();}
+  startX=null;
+});
+updateSlide();
+
+});
+</script>
+</body>
+</html>
